@@ -1,0 +1,2 @@
+'use client';import {useEffect,useState} from 'react';import type {Locale} from '@/lib/i18n';import {copy} from '@/lib/i18n';
+export function useLocale(){const [locale,setLocale]=useState<Locale>('en');useEffect(()=>{const saved=localStorage.getItem('summit-locale') as Locale|null;if(saved)setLocale(saved);const handler=(e:Event)=>setLocale((e as CustomEvent<Locale>).detail);window.addEventListener('summit-language',handler);return()=>window.removeEventListener('summit-language',handler)},[]);return copy[locale]}
