@@ -1,0 +1,4 @@
+export type ImportedQuestion={text:string;answers:string[];correct:number};
+function normalize(lines:string[]){const out:ImportedQuestion[]=[];for(const line of lines.map(x=>x.trim()).filter(Boolean)){const parts=line.split('|').map(x=>x.trim()).filter(Boolean);if(parts.length>=3){const correct=Math.max(0,Math.min(parts.length-2,Number(parts[parts.length-1])-1)||0);out.push({text:parts[0],answers:parts.slice(1,-1),correct})}else if(line.endsWith('?'))out.push({text:line,answers:['','','',''],correct:0})}return out}
+export function parseCsv(text:string){const rows=text.split(/\r?\n/).map(line=>line.split(',').map(x=>x.trim().replace(/^"|"$/g,'')));if(rows[0]?.[0]?.toLowerCase()==='question')rows.shift();return rows.filter(r=>r[0]).map(r=>({text:r[0],answers:r.slice(1,5),correct:Math.max(0,Number(r[5]||1)-1)}))}
+export function parseText(text:string){return normalize(text.split(/\r?\n/))}

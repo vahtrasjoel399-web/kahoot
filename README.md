@@ -15,6 +15,8 @@ Create a Supabase project, then copy its Project URL and publishable key from th
 
 For Supabase-native deployment, run the SQL in `supabase/migrations/0001_initial.sql` from the SQL editor. It creates the durable quiz/player tables, indexes and owner-only RLS policies. Teacher magic-link login is available at `/login`.
 
+Quiz persistence endpoints are available at `GET/POST /api/quizzes` and `POST /api/quizzes/:id/publish`; they require a Supabase Auth session and rely on the RLS policies for ownership.
+
 ## Domain rules
 
 `src/lib/game/scoring.ts` is the single scoring authority. Progress is round-based and reaches 100% for every active player; leaderboard ordering is score-first with deterministic tie breaks. `state-machine.ts` rejects invalid live-game transitions. The Prisma schema keeps completed-game data durable while active room state is intended for Redis.
