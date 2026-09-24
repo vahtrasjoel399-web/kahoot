@@ -1,0 +1,4 @@
+export type MiniGameId='TAP_CLIMB'|'QUICK_CHOICE'|'LUCKY_CHEST'|'REACTION'|'PATH_PICK';
+export const MINI_GAMES:Record<MiniGameId,{id:MiniGameId;label:string;durationSeconds:number;maxReward:number}>={TAP_CLIMB:{id:'TAP_CLIMB',label:'Tap Climb',durationSeconds:8,maxReward:150},QUICK_CHOICE:{id:'QUICK_CHOICE',label:'Quick Choice',durationSeconds:10,maxReward:150},LUCKY_CHEST:{id:'LUCKY_CHEST',label:'Lucky Chest',durationSeconds:7,maxReward:125},REACTION:{id:'REACTION',label:'Reaction',durationSeconds:6,maxReward:150},PATH_PICK:{id:'PATH_PICK',label:'Path Pick',durationSeconds:8,maxReward:100}};
+export function chooseMiniGame(round:number,roll=Math.random()):MiniGameId|null{if(round<2||roll>.15)return null;return (Object.keys(MINI_GAMES) as MiniGameId[])[Math.floor(roll*100)%5]}
+export function clampMiniGameReward(value:number){return Math.max(0,Math.min(150,Math.round(value)))}

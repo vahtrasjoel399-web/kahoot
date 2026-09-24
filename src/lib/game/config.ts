@@ -1,0 +1,1 @@
+export const GAME_CONFIG = { maxPlayers: 300, defaultQuestionTime: 20, minScore: 700, maxScore: 1000, streakBonus: 25, maxStreakBonus: 100, reconnectTimeoutSeconds: 120, sessionExpirySeconds: 86400 } as const;

@@ -1,0 +1,4 @@
+import type {GameState} from './types';
+const transitions: Record<GameState, GameState[]> = {LOBBY:['STARTING'],STARTING:['QUESTION_PREPARE','LOBBY'],QUESTION_PREPARE:['QUESTION_ACTIVE'],QUESTION_ACTIVE:['QUESTION_RESULTS'],QUESTION_RESULTS:['POWERUP_PHASE','NEXT_ROUND','LEADERBOARD','FINISHING'],POWERUP_PHASE:['MINIGAME_PREPARE','NEXT_ROUND','LEADERBOARD'],MINIGAME_PREPARE:['MINIGAME_ACTIVE'],MINIGAME_ACTIVE:['NEXT_ROUND','LEADERBOARD'],LEADERBOARD:['NEXT_ROUND','FINISHING'],NEXT_ROUND:['QUESTION_PREPARE','FINISHING'],FINISHING:['PODIUM'],PODIUM:['FINISHED'],FINISHED:[]};
+export function canTransition(from:GameState,to:GameState){return transitions[from].includes(to)}
+export function transition(from:GameState,to:GameState):GameState { if(!canTransition(from,to)) throw new Error(`Invalid game transition: ${from} -> ${to}`); return to; }

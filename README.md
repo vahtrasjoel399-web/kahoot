@@ -9,6 +9,12 @@ Summit Sprint is an original, mobile-first live classroom quiz platform. The MVP
 3. Run `npx prisma migrate dev --name init`.
 4. Run `npm run dev`, then open `http://localhost:3000`.
 
+## Supabase setup
+
+Create a Supabase project, then copy its Project URL and publishable key from the API settings into `.env`. Copy the Postgres connection URI from the Connect dialog into `DATABASE_URL`, run `npx prisma migrate deploy`, and verify `GET /api/health/supabase`. The browser and server clients use the official `@supabase/ssr` pattern so auth cookies can be added safely later. Never expose a service-role key in browser code.
+
+For Supabase-native deployment, run the SQL in `supabase/migrations/0001_initial.sql` from the SQL editor. It creates the durable quiz/player tables, indexes and owner-only RLS policies. Teacher magic-link login is available at `/login`.
+
 ## Domain rules
 
 `src/lib/game/scoring.ts` is the single scoring authority. Progress is round-based and reaches 100% for every active player; leaderboard ordering is score-first with deterministic tie breaks. `state-machine.ts` rejects invalid live-game transitions. The Prisma schema keeps completed-game data durable while active room state is intended for Redis.

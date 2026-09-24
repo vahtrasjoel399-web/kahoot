@@ -1,0 +1,2 @@
+import {describe,it,expect} from 'vitest'; import {scoreAnswer} from './scoring';
+describe('server scoring',()=>{it('rewards fast correct answers',()=>expect(scoreAnswer({correct:true,responseMs:2000,totalMs:20000,streak:0})).toBe(970));it('gives zero for wrong answers',()=>expect(scoreAnswer({correct:false,responseMs:1,totalMs:20000,streak:8})).toBe(0));it('supports fixed scoring',()=>expect(scoreAnswer({correct:true,responseMs:19000,totalMs:20000,speedScoring:false,streak:0})).toBe(1000));});
