@@ -1,6 +1,6 @@
 import {GAME_CONFIG} from './config';
 import {scoreAnswer} from './scoring';
-import {canTransition, transition} from './state-machine';
+import {transition} from './state-machine';
 import type {GameState} from './types';
 
 export type RoomQuestion={id:string;text:string;options:{id:string;text:string}[];correctOptionId:string;timeLimit:number;speedScoring:boolean};
