@@ -6,6 +6,7 @@ import type {GameState} from './types';
 export type RoomQuestion={id:string;text:string;options:{id:string;text:string}[];correctOptionId:string;timeLimit:number;speedScoring:boolean};
 export type RoomPlayer={id:string;nickname:string;reconnectToken:string;score:number;streak:number;correctAnswers:number;answers:number;totalResponseMs:number;connected:boolean};
 export type Room={id:string;pin:string;hostToken:string;state:GameState;questions:RoomQuestion[];questionIndex:number;questionStartedAt:number|null;players:Map<string,RoomPlayer>;submitted:Set<string>};
+export type StoredRoom=Omit<Room,'players'|'submitted'>&{players:[string,RoomPlayer][];submitted:string[]};
 
 const rooms=new Map<string,Room>(); const demoQuestions:RoomQuestion[]=[{id:'demo-1',text:'Which planet is known as the Red Planet?',options:[{id:'mars',text:'Mars'},{id:'venus',text:'Venus'},{id:'jupiter',text:'Jupiter'},{id:'saturn',text:'Saturn'}],correctOptionId:'mars',timeLimit:20,speedScoring:true},{id:'demo-2',text:'What is 8 × 7?',options:[{id:'54',text:'54'},{id:'56',text:'56'},{id:'64',text:'64'},{id:'72',text:'72'}],correctOptionId:'56',timeLimit:15,speedScoring:true},{id:'demo-3',text:'Water freezes at 0°C.',options:[{id:'true',text:'True'},{id:'false',text:'False'}],correctOptionId:'true',timeLimit:12,speedScoring:false}];
 const pin=()=>String(Math.floor(100000+Math.random()*900000));
@@ -13,6 +14,8 @@ const token=()=>crypto.randomUUID();
 export function createRoom(questions:RoomQuestion[]=demoQuestions){let p=pin();while([...rooms.values()].some(r=>r.pin===p))p=pin();const room:Room={id:crypto.randomUUID(),pin:p,hostToken:token(),state:'LOBBY',questions,questionIndex:0,questionStartedAt:null,players:new Map(),submitted:new Set()};rooms.set(room.id,room);return room}
 export function getRoom(id:string){return rooms.get(id)}
 export function getRoomByPin(value:string){return [...rooms.values()].find(r=>r.pin===value)}
+export function serializeRoom(room:Room):StoredRoom{return {...room,players:[...room.players.entries()],submitted:[...room.submitted]}}
+export function hydrateRoom(raw:StoredRoom):Room{const room:Room={...raw,players:new Map(raw.players),submitted:new Set(raw.submitted)};rooms.set(room.id,room);return room}
 export function joinRoom(room:Room,nickname:string){if(room.state!=='LOBBY')throw new Error('GAME_ALREADY_STARTED');if(room.players.size>=GAME_CONFIG.maxPlayers)throw new Error('ROOM_FULL');if([...room.players.values()].some(p=>p.nickname.toLowerCase()===nickname.toLowerCase()))throw new Error('NICKNAME_TAKEN');const player:RoomPlayer={id:crypto.randomUUID(),nickname,reconnectToken:token(),score:0,streak:0,correctAnswers:0,answers:0,totalResponseMs:0,connected:true};room.players.set(player.id,player);return player}
 export function startRoom(room:Room){room.state=transition(room.state,'STARTING');return startQuestion(room)}
 export function startQuestion(room:Room){if(!room.questions[room.questionIndex])return finishRoom(room);room.state=transition(room.state,'QUESTION_PREPARE');room.submitted.clear();room.questionStartedAt=Date.now();room.state=transition(room.state,'QUESTION_ACTIVE');return room.questions[room.questionIndex]}

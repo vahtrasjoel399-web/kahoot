@@ -14,6 +14,7 @@
     "@prisma/client": "^6.16.2",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.1",
+    "@upstash/redis": "^1.39.0",
     "mammoth": "^1.12.3",
     "next": "^15.5.4",
     "pdf-parse": "^2.4.5",
